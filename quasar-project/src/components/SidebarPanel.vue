@@ -5,7 +5,7 @@
     <q-btn
       v-for="kljucNotebook in notebooks"
       :key="kljucNotebook "
-      label="placeholder"
+      label="kljucNotebook"
       class="full-width"
       :style="{backgroundColor: notebook === selectedNotebook ? '#2d2d2d' : '#2b2b2b',color:'white'}"
       @click="$emit('select-notebook', kljucNotebook)"

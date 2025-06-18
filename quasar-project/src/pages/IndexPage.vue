@@ -32,21 +32,43 @@
     </div>
   </q-page>
 </template>
+
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { collection, getDocs } from 'firebase/firestore'
+import { db } from 'src/firebase/firebase'
 import SidebarPanel from 'components/SidebarPanel.vue'
 import NotesList from 'components/NotesList.vue'
 import NoteEditor from 'components/NoteEditor.vue'
 
 // Fake demo data
-const notebooks = ref(['Knjiga1', 'Knjiga2', 'Knjiga3'])
-const notes = ref([
-  { id: 1, title: 'Note 1', notebook: 'Knjiga1', content: 'Lorem ipsum...', date: '26.3.2025' },
-  { id: 2, title: 'Note 2', notebook: 'Knjiga2', content: 'Dolor sit amet...', date: '20.3.2025' },
-])
+const notebooks = ref([])
+const notes = ref([])
 
 const selectedNotebook = ref(null)
 const selectedNote = ref(null)
+
+async function DohvatiNotes() {
+  const querySnapshot = await getDocs(collection(db, 'notes'))
+  const allNotes = []
+  const uniqueNotebooks = new Set()
+querySnapshot.forEach(doc => {
+    const data = doc.data()
+    allNotes.push({
+      id: doc.id,
+      title: data.Naslov,
+      content: data.Content,
+      notebook: data.notebook || 'Uncategorized',
+      date: '—' // you can replace this with a timestamp if stored
+    })
+    uniqueNotebooks.add(data.notebook || 'Uncategorized')
+  })
+
+  notes.value = allNotes
+  notebooks.value = Array.from(uniqueNotebooks)
+}
+
+onMounted(DohvatiNotes)
 
 const filteredNotes = computed(() =>
   selectedNotebook.value
@@ -68,4 +90,3 @@ function handleUpdateNote(updatedNote) {
   if (index !== -1) notes.value[index] = updatedNote
 }
 </script>
-
