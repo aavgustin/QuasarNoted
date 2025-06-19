@@ -41,7 +41,6 @@ import SidebarPanel from 'components/SidebarPanel.vue'
 import NotesList from 'components/NotesList.vue'
 import NoteEditor from 'components/NoteEditor.vue'
 
-// Fake demo data
 const notebooks = ref([])
 const notes = ref([])
 
@@ -67,14 +66,56 @@ querySnapshot.forEach(doc => {
   notes.value = allNotes
   notebooks.value = Array.from(uniqueNotebooks)
 }
+async function DohvatiNotebooks(){
+  const querySnapshot = await getDocs(collection(db, "notebooks"));
+  const result=[]
+  //loop kroz sve notebook dokumente
+  for (const doc of querySnapshot.docs){
+    const notebookId= doc.id
+    const notebookPodaci= doc.data()
+    // || notebookId je tu ako ne postoji ime filea
+    const notebookName= notebookPodaci.NotebookName || notebookId
+    
+    //dohvat Notes iz Notebookova
+    //pohrana svih notes iz svake iteracija novog notebooka
+    const notesVarijabla = await getDocs(collection(db, `notebooks/${notebookId}/notes`))
+    const notes = notesVarijabla.docs.map(TrenutniDokument => ({
+      //mapiranje podataka dokumenta u array
+      id: TrenutniDokument.id,
+      title: TrenutniDokument.data().NoteName,
+      content: TrenutniDokument.data().NoteContent,
+      notebook: notebookName,
+      date: '-'
+    }))
+    //stvaranje i guranje objekta u variablu const notebooks
+    result.push({
+      id: notebookId,
+      name: notebookName,
+      notes
+    })
+  }
 
-onMounted(DohvatiNotes)
+  notebooks.value = result
+  console.log("Notebooks loaded:", result)
 
-const filteredNotes = computed(() =>
-  selectedNotebook.value
-    ? notes.value.filter(n => n.notebook === selectedNotebook.value)
-    : notes.value
-)
+}
+onMounted(DohvatiNotebooks)
+//onMounted(DohvatiNotes)
+
+const filteredNotes = computed(() => {
+  if (selectedNotebook.value) {
+    console.log("Selected notebook:", selectedNotebook.value)
+    console.log("Filtered notes:", filteredNotes.value)
+    const notebook = notebooks.value.find(n => n.name === selectedNotebook.value)
+    return notebook ? notebook.notes : []
+  } else {
+    // spoji sve bilješke iz svih notesa
+    return notebooks.value.flatMap(n => n.notes)
+    
+  }
+})
+
+
 
 function handleSelectNotebook(name) {
   selectedNotebook.value = name
@@ -86,7 +127,10 @@ function handleSelectNote(note) {
 }
 
 function handleUpdateNote(updatedNote) {
-  const index = notes.value.findIndex(n => n.id === updatedNote.id)
-  if (index !== -1) notes.value[index] = updatedNote
+  const notebook = notebooks.value.find(n => n.id === selectedNotebook.value)
+  if (!notebook) return
+  const index = notebook.notes.findIndex(n => n.id === updatedNote.id)
+  if (index !== -1) notebook.notes[index] = updatedNote
 }
+
 </script>

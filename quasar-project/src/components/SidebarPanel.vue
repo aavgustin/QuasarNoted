@@ -3,12 +3,12 @@
     <div class="text-h6">Notebooks</div>
     <!--Kartice za Prikaz Notes-->
     <q-btn
-      v-for="kljucNotebook in notebooks"
-      :key="kljucNotebook "
-      label="kljucNotebook"
+      v-for="notebook in notebooks"
+      :key="notebook.id"
+      :label="notebook.name"
       class="full-width"
       :style="{backgroundColor: notebook === selectedNotebook ? '#2d2d2d' : '#2b2b2b',color:'white'}"
-      @click="$emit('select-notebook', kljucNotebook)"
+      @click="$emit('select-notebook', notebook.id)"
     />
     <!--<q-separator class="q-my-md" />-->
 
