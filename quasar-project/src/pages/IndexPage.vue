@@ -2,30 +2,30 @@
   <q-page class="q-pa-sm bg-grey-10 text-white">
     <div class="row full-height no-wrap">
       <!-- Sidebar -->
-      <div class="col-3" style="background-color: grey;">
+      <div class="col-3 full-height" style="background-color: #393939;">
         <!--(liejva)komponenta za prikaz Notes  src>components-->
         <SidebarPanel
           :notebooks="notebooks"
-          :selectedNotebook="selectedNotebook"
-          @select-notebook="handleSelectNotebook"
+          :ActiveNotebook="ActiveNotebook"
+          @odabirKnjige="handleSelectNotebook"
         />
       </div>
 
       <!-- Notes List -->
-      <div class="col-4 q-pa-sm bg-grey-8">
+      <div class="col-4 q-pa-sm" style="background-color: #2d2d2d;">
         <NotesList
           :notes="filteredNotes"
-          :selectedNote="selectedNote"
+          :ActiveNote="ActiveNote"
           @select-note="handleSelectNote"
         />
       </div>
 
       <!-- Editor -->
-      <div class="col-5 q-pa-sm bg-grey-7">
+      <div class="col-5 q-pa-sm" style="background-color: #242424;">
         <NoteEditor
-          v-if="selectedNote"
-          :note="selectedNote"
-          @update-note="handleUpdateNote"
+          v-if="ActiveNote"
+          :note="ActiveNote"
+          @update-note="NoteWrite"
         />
       </div>
 
@@ -35,37 +35,16 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { collection, getDocs } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc } from 'firebase/firestore'
 import { db } from 'src/firebase/firebase'
 import SidebarPanel from 'components/SidebarPanel.vue'
 import NotesList from 'components/NotesList.vue'
 import NoteEditor from 'components/NoteEditor.vue'
 
 const notebooks = ref([])
-const notes = ref([])
+const ActiveNotebook = ref(null)
+const ActiveNote = ref(null)
 
-const selectedNotebook = ref(null)
-const selectedNote = ref(null)
-
-async function DohvatiNotes() {
-  const querySnapshot = await getDocs(collection(db, 'notes'))
-  const allNotes = []
-  const uniqueNotebooks = new Set()
-querySnapshot.forEach(doc => {
-    const data = doc.data()
-    allNotes.push({
-      id: doc.id,
-      title: data.Naslov,
-      content: data.Content,
-      notebook: data.notebook || 'Uncategorized',
-      date: '—' // you can replace this with a timestamp if stored
-    })
-    uniqueNotebooks.add(data.notebook || 'Uncategorized')
-  })
-
-  notes.value = allNotes
-  notebooks.value = Array.from(uniqueNotebooks)
-}
 async function DohvatiNotebooks(){
   const querySnapshot = await getDocs(collection(db, "notebooks"));
   const result=[]
@@ -103,10 +82,10 @@ onMounted(DohvatiNotebooks)
 //onMounted(DohvatiNotes)
 
 const filteredNotes = computed(() => {
-  if (selectedNotebook.value) {
-    console.log("Selected notebook:", selectedNotebook.value)
+  if (ActiveNotebook.value) {
+    console.log("Selected notebook:", ActiveNotebook.value)
     console.log("Filtered notes:", filteredNotes.value)
-    const notebook = notebooks.value.find(n => n.name === selectedNotebook.value)
+    const notebook = notebooks.value.find(n => n.name === ActiveNotebook.value)
     return notebook ? notebook.notes : []
   } else {
     // spoji sve bilješke iz svih notesa
@@ -115,22 +94,28 @@ const filteredNotes = computed(() => {
   }
 })
 
-
-
 function handleSelectNotebook(name) {
-  selectedNotebook.value = name
-  selectedNote.value = null
+  ActiveNotebook.value = name
+  ActiveNote.value = null
 }
 
 function handleSelectNote(note) {
-  selectedNote.value = note
+  ActiveNote.value = note
 }
 
-function handleUpdateNote(updatedNote) {
-  const notebook = notebooks.value.find(n => n.id === selectedNotebook.value)
+async function NoteWrite(updatedNote) {
+  const notebook = notebooks.value.find(n => n.id === ActiveNotebook.value)
   if (!notebook) return
   const index = notebook.notes.findIndex(n => n.id === updatedNote.id)
-  if (index !== -1) notebook.notes[index] = updatedNote
+  if (index !== -1){
+    notebook.notes[index] = updatedNote
+    const noteRef = doc(db, `notebooks/${notebook.id}/notes/${updatedNote.id}`)
+    await updateDoc(noteRef, {
+      NoteName: updatedNote.title,
+      NoteContent: updatedNote.content
+    })
+    console.log("Note Updated", updatedNote.id)
+  }
 }
 
 </script>

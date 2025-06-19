@@ -1,11 +1,12 @@
 <template>
   <div>
-    <q-input v-model="editable.title" label="Title" class="q-mb-sm" />
-    <q-input v-model="editable.notebook" label="Notebook" class="q-mb-sm" />
+    <q-input v-model="editable.title" label="Title" class="q-mb-sm" style="background-color: white;" />
+    <q-input v-model="editable.notebook" label="Notebook" class="q-mb-sm" style="background-color: white;" />
     <q-editor
       v-model="editable.content"
       height="300px"
-      class="bg-white text-black"
+      class="text-white"
+      style="background-color: #242424;"
     />
     <q-btn
       color="positive"

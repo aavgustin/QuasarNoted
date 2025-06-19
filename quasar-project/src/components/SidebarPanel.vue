@@ -7,21 +7,21 @@
       :key="notebook.id"
       :label="notebook.name"
       class="full-width"
-      :style="{backgroundColor: notebook === selectedNotebook ? '#2d2d2d' : '#2b2b2b',color:'white'}"
-      @click="$emit('select-notebook', notebook.id)"
+      :style="{backgroundColor: notebook === ActiveNotebook ? '#2d2d2d' : '#2b2b2b',color:'white'}"
+      @click="$emit('odabirKnjige', notebook.id)"
     />
     <!--<q-separator class="q-my-md" />-->
 
     <!--klik na show all notes postavi null na selection (umjesto kljuca)-->
-    <q-item clickable @click="$emit('select-notebook', null)">
+    <q-item clickable @click="$emit('odabirKnjige', null)">
       <q-item-section>Show all notes</q-item-section>
     </q-item>
   </div>
 </template>
 
 <script setup>
-//ocekuje se notebooks i selectedNotebook od strane indexpage-a
-defineProps(['notebooks', 'selectedNotebook'])
-//emits moze vratiti odabrani notebook parentu
-defineEmits(['select-notebook'])
+//povratak notebooks i ActiveNotebook strane indexpage-a
+defineProps(['notebooks', 'ActiveNotebook'])
+//Povratat odabranog notebooka parentu
+defineEmits(['odabirKnjige'])
 </script>
