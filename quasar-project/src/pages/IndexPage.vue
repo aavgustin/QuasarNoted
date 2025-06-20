@@ -94,8 +94,8 @@ const filteredNotes = computed(() => {
   }
 })
 
-function handleSelectNotebook(name) {
-  ActiveNotebook.value = name
+function handleSelectNotebook(id) {
+  ActiveNotebook.value = id
   ActiveNote.value = null
 }
 
@@ -104,17 +104,19 @@ function handleSelectNote(note) {
 }
 
 async function NoteWrite(updatedNote) {
-  const notebook = notebooks.value.find(n => n.id === ActiveNotebook.value)
+  const notebook = notebooks.value.find(n => n.name === updatedNote.notebook)
   if (!notebook) return
   const index = notebook.notes.findIndex(n => n.id === updatedNote.id)
   if (index !== -1){
     notebook.notes[index] = updatedNote
     const noteRef = doc(db, `notebooks/${notebook.id}/notes/${updatedNote.id}`)
+    
     await updateDoc(noteRef, {
       NoteName: updatedNote.title,
       NoteContent: updatedNote.content
     })
     console.log("Note Updated", updatedNote.id)
+    
   }
 }
 
