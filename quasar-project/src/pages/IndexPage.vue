@@ -9,6 +9,7 @@
           :ActiveNotebook="ActiveNotebook"
           @odabirKnjige="handleSelectNotebook"
           @refresh="DohvatiNotebooks"
+          
         />
       </div>
 
@@ -30,6 +31,7 @@
           v-if="ActiveNote"
           :note="ActiveNote"
           @update-note="NoteWrite"
+          @refresh="DohvatiNotebooks"
         />
       </div>
 
