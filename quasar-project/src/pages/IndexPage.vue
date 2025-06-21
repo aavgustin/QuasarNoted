@@ -8,15 +8,19 @@
           :notebooks="notebooks"
           :ActiveNotebook="ActiveNotebook"
           @odabirKnjige="handleSelectNotebook"
+          @refresh="DohvatiNotebooks"
         />
       </div>
 
       <!-- Notes List -->
-      <div class="col-4 q-pa-sm" style="background-color: #2d2d2d;">
+      <div class="col-4" style="background-color: #2d2d2d;">
         <NotesList
           :notes="filteredNotes"
           :ActiveNote="ActiveNote"
+          :ActiveNotebook="ActiveNotebook"
+          :notebooks="notebooks"
           @select-note="handleSelectNote"
+          @refresh-data="DohvatiNotebooks"
         />
       </div>
 
@@ -35,7 +39,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { collection, getDocs, doc, updateDoc } from 'firebase/firestore'
+import { collection, getDocs, doc, updateDoc, addDoc } from 'firebase/firestore'
 import { db } from 'src/firebase/firebase'
 import SidebarPanel from 'components/SidebarPanel.vue'
 import NotesList from 'components/NotesList.vue'
@@ -85,7 +89,7 @@ const filteredNotes = computed(() => {
   if (ActiveNotebook.value) {
     console.log("Selected notebook:", ActiveNotebook.value)
     console.log("Filtered notes:", filteredNotes.value)
-    const notebook = notebooks.value.find(n => n.name === ActiveNotebook.value)
+    const notebook = notebooks.value.find(n => n.id === ActiveNotebook.value)
     return notebook ? notebook.notes : []
   } else {
     // spoji sve bilješke iz svih notesa
