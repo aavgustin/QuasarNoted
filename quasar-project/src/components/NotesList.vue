@@ -9,93 +9,125 @@
     text-color="black"
     @click="showDialog = true"/>
     </div>
-    <!--dialog-->
+    <!--dialog za novi note-->
     <q-dialog v-model="showDialog">
     <q-card style="height: 500px; width: 500px;">
       <q-card-section>
-        <div class="text-h6">Create Note</div>
+        <div>Create Note</div>
         <q-select
           v-model="selectedNotebookId"
           :options="notebooks.map(n => n.id)"
           :option-label="val => notebooks.find(n => n.id === val)?.name || val"
-          label="Select Notebook"
-          dense
-          outlined
-          class="q-mb-sm"
-        />
+          label="Select Notebook"/>
         <q-input
           v-model="newNoteName"
-          label="Note Title"
-          dense
-          outlined
-          class="q-mb-sm"
-        />
+          label="Note Title"/>
       </q-card-section>
-      <q-card-actions align="right">
+      <q-card-actions>
         <q-btn label="Cancel" v-close-popup />
         <q-btn label="Create" color="primary" @click="addNote" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 
-    <!--notes-->
-    <q-card
-      v-for="note in notes"
-      :key="note.id"
-      class="q-mb-sm"
-      @click="$emit('select-note', note)"
-      :class="{ 'text-white': note.id === ActiveNote?.id }"
-      :style="{ backgroundColor: note.notebook === ActiveNotebook ? '#2d2d2d' : '#2b2b2b', color: 'white' }">
+    <!--q-card za kartice notea-->
+<q-card
+  v-for="note in notes"
+  :key="note.id"
+  class="q-mb-sm"
+  :class="{ 'text-white': note.id === ActiveNote?.id }"
+  :style="{ backgroundColor: note.notebook === ActiveNotebook ? '#2d2d2d' : '#2b2b2b', color: 'white' }"
+>
+  <q-card-section class="row items-center">
+    <div class="col" @click="$emit('OdabranNote', note)" style="cursor: pointer;">
+      <div class="text-subtitle1">{{ note.title }}</div>
+      <div class="text-caption text-grey">
+        {{ note.date }} - In notebook: {{ note.notebook }}
+      </div>
+      <div class="ellipsis">{{ note.content.slice(0, 100) }}</div>
+    </div>
+    
+    <!-- button za brisanje notea -->
+    <div class="col-auto">
+      <q-btn
+        flat
+        round
+        dense
+        @click.stop="deleteNote(note)"
+        style="padding: 4px;"
+      >
+        <img src="../delete.png" style="height: 20px;" />
+      </q-btn>
+    </div>
+  </q-card-section>
+</q-card>
+<q-dialog v-model="deleteDialogVisible">
+  <q-card>
+    <q-card-section class="text-h6">
+      Are you sure you want to delete this note?
+    </q-card-section>
 
+    <q-card-actions align="right">
+      <q-btn flat label="Cancel" v-close-popup />
+      <q-btn flat label="Delete" color="negative" @click="confirmDeleteNote" />
+    </q-card-actions>
+  </q-card>
+</q-dialog>
 
-      <q-card-section>
-        <div class="text-subtitle1">{{ note.title }}</div>
-        <div class="text-caption text-grey">
-          {{ note.date }} - In notebook: {{ note.notebook }}
-        </div>
-        <div class="ellipsis">{{ note.content.slice(0, 100) }}</div>
-      </q-card-section>
-    </q-card>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { collection, addDoc } from 'firebase/firestore'
+import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore'
 import { db } from 'src/firebase/firebase'
 
-const props = defineProps(['notes', 'ActiveNote', 'notebooks', 'ActiveNotebook']) // <-- Add notebooks as a prop
-const emit = defineEmits(['select-note', 'refresh-data']) // <-- optional emit to reload notes
+const props = defineProps(['notes', 'ActiveNote', 'notebooks', 'ActiveNotebook'])
+const emit = defineEmits(['OdabranNote', 'refresh'])
 
 const showDialog = ref(false)
 const selectedNotebookId = ref('')
 const newNoteName = ref('')
 
-async function addNote() {
-  console.log("addNote triggered")
-  console.log("Notebook ID:", selectedNotebookId.value)
-  console.log("Note Name:", newNoteName.value)
+// For delete confirmation
+const deleteDialogVisible = ref(false)
+const noteToDelete = ref(null)
 
-  if (!selectedNotebookId.value || !newNoteName.value) {
-    console.warn("Missing required fields")
-    return
-  }
+async function addNote() {
+  if (!selectedNotebookId.value || !newNoteName.value) return
 
   try {
-    const docRef = await addDoc(collection(db, `notebooks/${selectedNotebookId.value}/notes`), {
+    await addDoc(collection(db, `notebooks/${selectedNotebookId.value}/notes`), {
       NoteName: newNoteName.value,
-      NoteContent: "" // optional, but needed to avoid Firebase schema issues
+      NoteContent: ""
     })
-
-    console.log("Note successfully created with ID:", docRef.id)
-    
     showDialog.value = false
     newNoteName.value = ''
-    
-    // emit event to refresh data from Firebase (if parent listens to it)
-    emit('refresh-data')
+    emit('refresh')
   } catch (error) {
     console.error("Error adding note:", error)
+  }
+}
+
+function deleteNote(note) {
+  noteToDelete.value = note
+  deleteDialogVisible.value = true
+}
+
+async function confirmDeleteNote() {
+  const note = noteToDelete.value
+  if (!note) return
+
+  const notebook = props.notebooks.find(n => n.name === note.notebook)
+  if (!notebook) return
+
+  try {
+    await deleteDoc(doc(db, `notebooks/${notebook.id}/notes/${note.id}`))
+    deleteDialogVisible.value = false
+    noteToDelete.value = null
+    emit('refresh')
+  } catch (error) {
+    console.error("Error", error)
   }
 }
 

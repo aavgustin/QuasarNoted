@@ -1,16 +1,13 @@
 <template>
-  <q-page class="q-pa-sm bg-grey-10 text-white">
-    <div class="row full-height no-wrap">
-      <!-- Sidebar -->
-      <div class="col-3 full-height" style="background-color: #393939;">
+  <q-page class="text-white" style="background-color: black;">
+    <div class="row full-height">
+      <div class="col-3" style="background-color: #393939;">
         <!--(liejva)komponenta za prikaz Notes  src>components-->
         <SidebarPanel
           :notebooks="notebooks"
           :ActiveNotebook="ActiveNotebook"
-          @odabirKnjige="handleSelectNotebook"
-          @refresh="DohvatiNotebooks"
-          
-        />
+          @odabirKnjige="ActiveNotebookFunction"
+          @refresh="DohvatiNotebooks"/>
       </div>
 
       <!-- Notes List -->
@@ -20,9 +17,8 @@
           :ActiveNote="ActiveNote"
           :ActiveNotebook="ActiveNotebook"
           :notebooks="notebooks"
-          @select-note="handleSelectNote"
-          @refresh-data="DohvatiNotebooks"
-        />
+          @OdabranNote="ActiveNoteFunction"
+          @refresh="DohvatiNotebooks"/>
       </div>
 
       <!-- Editor -->
@@ -31,10 +27,8 @@
           v-if="ActiveNote"
           :note="ActiveNote"
           @update-note="NoteWrite"
-          @refresh="DohvatiNotebooks"
-        />
+          @refresh="DohvatiNotebooks"/>
       </div>
-
     </div>
   </q-page>
 </template>
@@ -51,6 +45,9 @@ const notebooks = ref([])
 const ActiveNotebook = ref(null)
 const ActiveNote = ref(null)
 
+//dohvat notebooka pri loadanju
+onMounted(DohvatiNotebooks)
+
 async function DohvatiNotebooks(){
   const querySnapshot = await getDocs(collection(db, "notebooks"));
   const result=[]
@@ -58,7 +55,7 @@ async function DohvatiNotebooks(){
   for (const doc of querySnapshot.docs){
     const notebookId= doc.id
     const notebookPodaci= doc.data()
-    // || notebookId je tu ako ne postoji ime filea
+    // || notebookId ak ne postoji ime filea
     const notebookName= notebookPodaci.NotebookName || notebookId
     
     //dohvat Notes iz Notebookova
@@ -79,18 +76,11 @@ async function DohvatiNotebooks(){
       notes
     })
   }
-
   notebooks.value = result
-  console.log("Notebooks loaded:", result)
-
 }
-onMounted(DohvatiNotebooks)
-//onMounted(DohvatiNotes)
 
 const filteredNotes = computed(() => {
   if (ActiveNotebook.value) {
-    console.log("Selected notebook:", ActiveNotebook.value)
-    console.log("Filtered notes:", filteredNotes.value)
     const notebook = notebooks.value.find(n => n.id === ActiveNotebook.value)
     return notebook ? notebook.notes : []
   } else {
@@ -100,12 +90,12 @@ const filteredNotes = computed(() => {
   }
 })
 
-function handleSelectNotebook(id) {
+function ActiveNotebookFunction(id) {
   ActiveNotebook.value = id
   ActiveNote.value = null
 }
 
-function handleSelectNote(note) {
+function ActiveNoteFunction(note) {
   ActiveNote.value = note
 }
 
@@ -121,9 +111,7 @@ async function NoteWrite(updatedNote) {
       NoteName: updatedNote.title,
       NoteContent: updatedNote.content
     })
-    console.log("Note Updated", updatedNote.id)
     
   }
 }
-
 </script>
