@@ -2,6 +2,11 @@
   <div>
     <div class="row">
     <div div style="font-size: 20px;">Notes</div>
+    <q-input
+      v-model="searchNotes"
+      outlined
+      label="Notebooks:"
+      class="q-my-sm"/>
     <q-btn
     class="q-ml-auto"
     label="+"
@@ -32,7 +37,7 @@
 
     <!--q-card za kartice notea-->
 <q-card
-  v-for="note in notes"
+  v-for="note in filteredNotes"
   :key="note.id"
   class="q-mb-sm"
   :class="{ 'text-white': note.id === ActiveNote?.id }"
@@ -67,7 +72,7 @@
       Are you sure you want to delete this note?
     </q-card-section>
 
-    <q-card-actions align="right">
+    <q-card-actions>
       <q-btn flat label="Cancel" v-close-popup />
       <q-btn flat label="Delete" color="negative" @click="confirmDeleteNote" />
     </q-card-actions>
@@ -78,7 +83,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { collection, addDoc, deleteDoc, doc } from 'firebase/firestore'
 import { db } from 'src/firebase/firebase'
 
@@ -89,7 +94,16 @@ const showDialog = ref(false)
 const selectedNotebookId = ref('')
 const newNoteName = ref('')
 
-// For delete confirmation
+//preraga noteova
+const searchNotes = ref('');
+const filteredNotes = computed(() => {
+  const term = searchNotes.value.toLowerCase()
+  return props.notes.filter(n =>
+    n.title.toLowerCase().includes(term)
+  )
+})
+
+// provjera ako se zeli izbrisati
 const deleteDialogVisible = ref(false)
 const noteToDelete = ref(null)
 
@@ -130,6 +144,5 @@ async function confirmDeleteNote() {
     console.error("Error", error)
   }
 }
-
 </script>
 

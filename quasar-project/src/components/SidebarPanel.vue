@@ -2,9 +2,9 @@
   <div class="row">
     <div style="font-size: 20px;">Notebooks</div>
     <q-input
-      v-model="searchQuery"
+      v-model="searchNotebook"
       outlined
-      label="Search Notebooks"
+      label="Notebooks:"
       class="q-my-sm"/>
     <!--quasarov button <q-btn> umjesto standardnog html <button>-->
     <q-btn
@@ -45,7 +45,7 @@
 </q-dialog>
 
 <!--ptelja za prikazat notebook-->
-<div v-for="notebook in notebooks"
+<div v-for="notebook in filteredNotebooks"
  :key="notebook.id"
  class="row items-center q-my-xs">
   <q-btn
@@ -70,13 +70,24 @@
 
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { db } from 'src/firebase/firebase'
 import { collection, addDoc, deleteDoc, doc, getDocs } from 'firebase/firestore'
 //povratak notebooks i ActiveNotebook strane indexpage-a
 //Povratat odabranog notebooka parentu
 const props = defineProps(['notebooks', 'ActiveNotebook'])
 const emit = defineEmits(['odabirKnjige', 'refresh'])
+
+//pretraga notebook u input feild
+const searchNotebook = ref('');
+const filteredNotebooks = computed(() => {
+  const term = searchNotebook.value.toLowerCase()
+  return props.notebooks.filter(n =>
+    n.name.toLowerCase().includes(term)
+  )
+})
+
+
 
 //po defaultu dialog zatvoren a naziv knjige prazan
 const showDialog = ref(false)
