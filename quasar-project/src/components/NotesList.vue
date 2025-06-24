@@ -1,18 +1,21 @@
 <template>
   <div>
-    <div class="row">
-    <div div style="font-size: 20px;">Notes</div>
-    <q-input
+    <div class="row" style="padding-left:60px;padding-top: 115px;">
+    <q-input style="padding-left: 20px; width: 270px;"
       v-model="searchNotes"
       outlined
-      label="Notebooks:"
+      bg-color="white"
+      label="Notes:"
       class="q-my-sm"/>
+    <div style="padding-top: 15px; padding-left: 20px;">
     <q-btn
     class="q-ml-auto"
     label="+"
+    round
     color="yellow"
     text-color="black"
     @click="showDialog = true"/>
+    </div>
     </div>
     <!--dialog za novi note-->
     <q-dialog v-model="showDialog">
@@ -56,11 +59,9 @@
     <div class="col-auto">
       <q-btn
         flat
-        round
         dense
         @click.stop="deleteNote(note)"
-        style="padding: 4px;"
-      >
+        style="padding: 4px;">
         <img src="../delete.png" style="height: 20px;" />
       </q-btn>
     </div>

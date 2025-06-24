@@ -1,7 +1,8 @@
 <template>
-  <q-page class="text-white" style="background-color: black;">
-    <div class="row full-height">
+  <q-page class="text-white" style="background-color: black">
+    <div class="row" style="height: 100vh;">
       <div class="col-3" style="background-color: #393939;">
+      
         <!--(liejva)komponenta za prikaz Notes  src>components-->
         <SidebarPanel
           :notebooks="notebooks"
@@ -12,6 +13,7 @@
 
       <!-- Notes List -->
       <div class="col-4" style="background-color: #2d2d2d;">
+        
         <NotesList
           :notes="filteredNotes"
           :ActiveNote="ActiveNote"
@@ -23,6 +25,7 @@
 
       <!-- Editor -->
       <div class="col-5 q-pa-sm" style="background-color: #242424;">
+        <div style="padding-top:30%" v-if="!ActiveNote"><img src="../empty.png"></div>
         <NoteEditor
           v-if="ActiveNote"
           :note="ActiveNote"

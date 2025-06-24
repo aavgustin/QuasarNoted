@@ -27,6 +27,8 @@
       @click="$emit('update-note', editable)"
     />
   </div>
+
+
 </template>
 
 <script setup>

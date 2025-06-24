@@ -1,18 +1,23 @@
 <template>
   <div class="row">
-    <div style="font-size: 20px;">Notebooks</div>
-    <q-input
+    <div style="padding-top: 20px; padding-bottom: 20px; padding-left: 30px; padding-right: 10px;"><img src="src/logo.png"></div>
+    
+    <q-input style="padding-left: 20px; width: 270px;"
       v-model="searchNotebook"
       outlined
+      bg-color="white"
       label="Notebooks:"
       class="q-my-sm"/>
     <!--quasarov button <q-btn> umjesto standardnog html <button>-->
-    <q-btn
+    <div style="padding-top: 15px; padding-left: 20px;">
+    <q-btn style="height: 20px; width: auto;"
       class="q-ml-auto"
+      round
       label="+"
       color="yellow"
       text-color="black"
       @click="showDialog = true"/>
+      </div>
   </div>
 
 <!--popup dialog za dodavanje knjige u firebase-->
@@ -55,11 +60,13 @@
     @click="$emit('odabirKnjige', notebook.id)"/>
 
 <!--tipka za brianje notebooka-->
-  <q-btn
-    flat
-    icon="delete"
-    color="red"
-    @click="triggerDelete(notebook)"/>
+        <q-btn
+        flat
+        dense
+        @click.stop="triggerDelete(notebook)"
+        style="padding: 4px;">
+        <img src="../delete.png" style="height: 20px;" />
+      </q-btn>
 </div>
 
 <!--klik na show all notes postavi "null" na selection (umjesto kljuca)-->
