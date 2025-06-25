@@ -9,7 +9,6 @@
       class="q-my-sm"/>
     <div style="padding-top: 15px; padding-left: 20px;">
     <q-btn
-    class="q-ml-auto"
     label="+"
     round
     color="yellow"

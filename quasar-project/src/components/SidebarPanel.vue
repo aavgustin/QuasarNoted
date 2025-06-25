@@ -11,7 +11,6 @@
     <!--quasarov button <q-btn> umjesto standardnog html <button>-->
     <div style="padding-top: 15px; padding-left: 20px;">
     <q-btn style="height: 20px; width: auto;"
-      class="q-ml-auto"
       round
       label="+"
       color="yellow"
@@ -56,7 +55,7 @@
   <q-btn
     class="col"
     :label="notebook.name"
-    :style="{backgroundColor: notebook.id === ActiveNotebook ? '#2d2d2d' : '#2b2b2b', color:'white'}"
+    :style="{backgroundColor: notebook.id === ActiveNotebook ? '#f8d02e' : '#2b2b2b', color:'white'}"
     @click="$emit('odabirKnjige', notebook.id)"/>
 
 <!--tipka za brianje notebooka-->
@@ -69,9 +68,9 @@
       </q-btn>
 </div>
 
-<!--klik na show all notes postavi "null" na selection (umjesto kljuca)-->
+<!--klik na clear postavi "null" na selection (umjesto kljuca)-->
 <q-item clickable @click="$emit('odabirKnjige', null)">
-  <q-item-section>All notes</q-item-section>
+  <div style="font-size:16px;color:#f8d02e; padding-left: 40%;"><q-item-section>Clear</q-item-section></div>
 </q-item>
 </template>
 

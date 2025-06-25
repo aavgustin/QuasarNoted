@@ -12,21 +12,21 @@
     </div>
     </div>
     <q-input v-model="editable.title" label="Title" class="q-mb-sm" style="background-color: white;" />
-    <q-input v-model="editable.notebook" label="Notebook" class="q-mb-sm" style="background-color: white;" />
+    <div style="color:#f8d02e">Notebook: {{ editable.notebook }}</div>
     <q-editor
       v-model="editable.content"
-      height="300px"
+      height="420px"
       class="text-white"
-      style="background-color: #242424;"
-    />
+      style="background-color: #242424;"/>
+    <div style="padding-left: 90%;">
     <q-btn
-      color="positive"
-      icon="check"
-      label="Save"
+      color="yellow"
+      round
+      text-color="black"
+      label="✔"
       class="q-mt-md"
-      @click="$emit('update-note', editable)"
-    />
-  </div>
+      @click="$emit('update-note', editable)"/>
+  </div></div>
 
 
 </template>

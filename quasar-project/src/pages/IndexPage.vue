@@ -25,7 +25,9 @@
 
       <!-- Editor -->
       <div class="col-5 q-pa-sm" style="background-color: #242424;">
-        <div style="padding-top:30%" v-if="!ActiveNote"><img src="../empty.png"></div>
+        <div style="padding-top:30%;padding-left: 3%;" v-if="!ActiveNote">
+        <img src="../empty.png">
+        </div>
         <NoteEditor
           v-if="ActiveNote"
           :note="ActiveNote"
@@ -43,7 +45,9 @@ import { db } from 'src/firebase/firebase'
 import SidebarPanel from 'components/SidebarPanel.vue'
 import NotesList from 'components/NotesList.vue'
 import NoteEditor from 'components/NoteEditor.vue'
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const notebooks = ref([])
 const ActiveNotebook = ref(null)
 const ActiveNote = ref(null)
@@ -107,14 +111,18 @@ async function NoteWrite(updatedNote) {
   if (!notebook) return
   const index = notebook.notes.findIndex(n => n.id === updatedNote.id)
   if (index !== -1){
-    notebook.notes[index] = updatedNote
     const noteRef = doc(db, `notebooks/${notebook.id}/notes/${updatedNote.id}`)
     
     await updateDoc(noteRef, {
       NoteName: updatedNote.title,
       NoteContent: updatedNote.content
     })
-    
-  }
-}
+    await DohvatiNotebooks();
+    $q.notify({
+        message: 'Note updated',
+        position: 'bottom',
+        timeout: 2000,
+        type:'warning'
+      })
+}}
 </script>
