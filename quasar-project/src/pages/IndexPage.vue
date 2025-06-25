@@ -25,6 +25,15 @@
 
       <!-- Editor -->
       <div class="col-5 q-pa-sm" style="background-color: #242424;">
+        <div style="display: flex; justify-content: center; font-size: 36px; padding-top: 7%;">Preview</div>
+        <div style="position: absolute; top: 1px; right: 1px;">
+          <q-btn
+            flat
+            @click="DohvatiNotebooks"
+            style="padding: 0; min-width: 0;">
+            <img src="../syncimg.png" style="height: 40px;" />
+          </q-btn>
+        </div>
         <div style="padding-top:30%;padding-left: 3%;" v-if="!ActiveNote">
         <img src="../empty.png">
         </div>
@@ -74,7 +83,9 @@ async function DohvatiNotebooks(){
       title: TrenutniDokument.data().NoteName,
       content: TrenutniDokument.data().NoteContent,
       notebook: notebookName,
-      date: '-'
+      date: TrenutniDokument.data().DateEdited || '-',
+      DateEdited: TrenutniDokument.data().DateEdited || null
+
     }))
     //stvaranje i guranje objekta u variablu const notebooks
     result.push({
@@ -87,15 +98,21 @@ async function DohvatiNotebooks(){
 }
 
 const filteredNotes = computed(() => {
+  const allNotes = notebooks.value.flatMap(n => n.notes)
+
   if (ActiveNotebook.value) {
     const notebook = notebooks.value.find(n => n.id === ActiveNotebook.value)
     return notebook ? notebook.notes : []
-  } else {
-    // spoji sve bilješke iz svih notesa
-    return notebooks.value.flatMap(n => n.notes)
-    
   }
+
+  // ako nema aktivnog notebooka, vrati sve i sortiraj po lastEdited
+  return [...allNotes].sort((a, b) => {
+  const aTime = new Date(a.DateEdited || 0)
+  const bTime = new Date(b.DateEdited || 0)
+  return bTime - aTime
 })
+})
+
 
 function ActiveNotebookFunction(id) {
   ActiveNotebook.value = id
@@ -115,7 +132,8 @@ async function NoteWrite(updatedNote) {
     
     await updateDoc(noteRef, {
       NoteName: updatedNote.title,
-      NoteContent: updatedNote.content
+      NoteContent: updatedNote.content,
+      DateEdited: new Date().toISOString()
     })
     await DohvatiNotebooks();
     $q.notify({

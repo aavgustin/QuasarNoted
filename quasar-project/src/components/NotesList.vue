@@ -1,13 +1,19 @@
 <template>
   <div>
-    <div class="row" style="padding-left:60px;padding-top: 115px;">
+  <div style="display: flex; justify-content: center; font-size: 36px; padding-top: 10%;">
+    {{ props.ActiveNotebook 
+    ? (props.notebooks.find(n => n.id === props.ActiveNotebook)?.name || 'Notebook') 
+    : 'Recently edited' 
+}}
+
+  </div>
+    <div class="row" style="display: flex; justify-content: center; font-size: 36px; padding-top: 5%;">
     <q-input style="padding-left: 20px; width: 270px;"
       v-model="searchNotes"
       outlined
       bg-color="white"
-      label="Notes:"
-      class="q-my-sm"/>
-    <div style="padding-top: 15px; padding-left: 20px;">
+      label="Notes:"/>
+    <div style="padding-left: 20px;">
     <q-btn
     label="+"
     round
@@ -16,6 +22,7 @@
     @click="showDialog = true"/>
     </div>
     </div>
+
     <!--dialog za novi note-->
     <q-dialog v-model="showDialog">
     <q-card style="height: 500px; width: 500px;">
@@ -38,12 +45,12 @@
   </q-dialog>
 
     <!--q-card za kartice notea-->
-<q-card
+<q-card style="padding-top: 2%;"
   v-for="note in filteredNotes"
   :key="note.id"
   class="q-mb-sm"
   :class="{ 'text-white': note.id === ActiveNote?.id }"
-  :style="{ backgroundColor: note.notebook === ActiveNotebook ? '#2d2d2d' : '#2b2b2b', color: 'white' }"
+  :style="{ backgroundColor: note.notebook === ActiveNotebook ? '#2d2d2d' : '#2b2b2b', color: 'white',  }"
 >
   <q-card-section class="row items-center">
     <div class="col" @click="$emit('OdabranNote', note)" style="cursor: pointer;">
@@ -97,10 +104,24 @@ const newNoteName = ref('')
 //preraga noteova
 const searchNotes = ref('');
 const filteredNotes = computed(() => {
-  const term = searchNotes.value.toLowerCase()
-  return props.notes.filter(n =>
-    n.title.toLowerCase().includes(term)
-  )
+const term = searchNotes.value.toLowerCase()
+
+  // notes iz aktivnog notebooak
+  if (props.ActiveNotebook) {
+    return props.notes.filter(n =>
+      props.notebooks.find(nb => nb.id === props.ActiveNotebook)?.name === n.notebook &&
+      n.title.toLowerCase().includes(term)
+    )
+  }
+
+  // recentlyedited
+  return [...props.notes]
+    .filter(n => n.title.toLowerCase().includes(term))
+    .sort((a, b) => {
+      const aTime = new Date(a.lastEdited || 0)
+      const bTime = new Date(b.lastEdited || 0)
+      return bTime - aTime
+    })
 })
 
 // provjera ako se zeli izbrisati
@@ -113,7 +134,8 @@ async function addNote() {
   try {
     await addDoc(collection(db, `notebooks/${selectedNotebookId.value}/notes`), {
       NoteName: newNoteName.value,
-      NoteContent: ""
+      NoteContent: "",
+      DateEdited: new Date().toISOString()
     })
     showDialog.value = false
     newNoteName.value = ''

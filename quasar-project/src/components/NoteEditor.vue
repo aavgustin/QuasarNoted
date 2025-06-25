@@ -1,42 +1,37 @@
 <template>
   <div>
-    <div class="row">
-    <div class="col-11"> Preview</div>
-    <div class="col-1">
-      <q-btn
-        flat
-        @click="$emit('refresh')"
-        style="padding: 0; min-width: 0;">
-      <img src="../syncimg.png" style="height: 40px;">
-      </q-btn>
+    <div style="padding-top: 5%;" class="row justify-center">
+    <q-input v-model="editable.title" label="Title" style="background-color: white; width: 80%;" />
     </div>
-    </div>
-    <q-input v-model="editable.title" label="Title" class="q-mb-sm" style="background-color: white;" />
-    <div style="color:#f8d02e">Notebook: {{ editable.notebook }}</div>
+    <div class="row justify-center" style="color:#f8d02e">Notebook: {{ editable.notebook }}</div>
     <q-editor
       v-model="editable.content"
       height="420px"
       class="text-white"
-      style="background-color: #242424;"/>
-    <div style="padding-left: 90%;">
+      style="background-color: #242424;"
+      :toolbar="[
+    ['bold', 'italic', 'underline'],
+    ['unordered', 'ordered'],
+    ['undo', 'redo'],
+    ['fullscreen']]"/>
+    </div>
+    <div style="position: fixed; bottom: 20px; right: 20px;">
     <q-btn
       color="yellow"
       round
       text-color="black"
       label="✔"
-      class="q-mt-md"
       @click="$emit('update-note', editable)"/>
-  </div></div>
-
-
+    </div>
 </template>
 
 <script setup>
 import { ref, watch } from 'vue'
 const props = defineProps(['note'])
-const emit = defineEmits(['update-note'])
+const emit = defineEmits(['update-note', 'refresh'])
 
 const editable = ref({ ...props.note })
+//const currentDate = new Date().toLocaleDateString()
 
 watch(() => props.note, (newVal) => {
   editable.value = { ...newVal }

@@ -1,15 +1,14 @@
 <template>
-  <div class="row">
+  <div class="row ">
     <div style="padding-top: 20px; padding-bottom: 20px; padding-left: 30px; padding-right: 10px;"><img src="src/logo.png"></div>
     
     <q-input style="padding-left: 20px; width: 270px;"
       v-model="searchNotebook"
       outlined
       bg-color="white"
-      label="Notebooks:"
-      class="q-my-sm"/>
+      label="Notebooks:"/>
     <!--quasarov button <q-btn> umjesto standardnog html <button>-->
-    <div style="padding-top: 15px; padding-left: 20px;">
+    <div style="padding-top: 8px; padding-left: 20px;">
     <q-btn style="height: 20px; width: auto;"
       round
       label="+"
@@ -68,7 +67,7 @@
       </q-btn>
 </div>
 
-<!--klik na clear postavi "null" na selection (umjesto kljuca)-->
+<!--klik na show all notes postavi "null" na selection (umjesto kljuca)-->
 <q-item clickable @click="$emit('odabirKnjige', null)">
   <div style="font-size:16px;color:#f8d02e; padding-left: 40%;"><q-item-section>Clear</q-item-section></div>
 </q-item>
