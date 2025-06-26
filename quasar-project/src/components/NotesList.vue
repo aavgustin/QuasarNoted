@@ -46,7 +46,7 @@
     </q-dialog>
 
     <!--q-card za kartice notea-->
-    <div class="notes-scroll">
+    <div class="notes-scroll" style="padding-top: 20px;">
       <q-card
         v-for="note in filteredNotes"
         :key="note.id"

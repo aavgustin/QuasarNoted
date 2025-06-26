@@ -3,7 +3,7 @@
     <div class="logo-container">
       <img src="src/logo.png" />
     </div>
-
+    <div></div>
     <q-input
       class="notebook-input"
       v-model="searchNotebook"
@@ -56,7 +56,7 @@
   <div
     v-for="notebook in filteredNotebooks"
     :key="notebook.id"
-    class="row items-center q-my-xs">
+    class="row items-center q-my-xs card-class">
     <q-btn
       class="col notebook-btn"
       :label="notebook.name"

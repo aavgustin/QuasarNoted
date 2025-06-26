@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="top-padding row justify-center">
-      <q-input v-model="editable.title" label="Title" class="note-title-input" />
+      <q-input v-model="editable.title" label="    Title" class="note-title-input" />
     </div>
     <div class="row justify-center notebook-label">Notebook: {{ editable.notebook }}</div>
     <q-editor

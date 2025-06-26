@@ -1,8 +1,7 @@
 <template>
-  <q-page class="text-white" style="background-color: black">
-    <div class="row" style="height: 100vh;">
-      <div class="col-3" style="background-color: #393939;">
-      
+  <q-page class="text-white page-black">
+    <div class="row full-height">
+      <div class="col-12 col-md-3 bg-sidepanel">
         <!--(liejva)komponenta za prikaz Notes  src>components-->
         <SidebarPanel
           :notebooks="notebooks"
@@ -12,8 +11,7 @@
       </div>
 
       <!-- Notes List -->
-      <div class="col-4" style="background-color: #2d2d2d;">
-        
+      <div class="col-12 col-md-4 bg-notelist">
         <NotesList
           :notes="filteredNotes"
           :ActiveNote="ActiveNote"
@@ -24,18 +22,18 @@
       </div>
 
       <!-- Editor -->
-      <div class="col-5 q-pa-sm" style="background-color: #242424;">
-        <div style="display: flex; justify-content: center; font-size: 36px; padding-top: 7%;">Preview</div>
-        <div style="position: absolute; top: 1px; right: 1px;">
+      <div class="col-12 col-md-5 q-pa-sm bg-editor">
+        <div class="preview-label">Preview</div>
+        <div class="sync-btn">
           <q-btn
             flat
             @click="DohvatiNotebooks"
-            style="padding: 0; min-width: 0;">
-            <img src="../syncimg.png" style="height: 40px;" />
+            class="sync-icon-btn">
+            <img src="../syncimg.png" class="sync-icon" />
           </q-btn>
         </div>
-        <div style="padding-top:30%;padding-left: 3%;" v-if="!ActiveNote">
-        <img src="../empty.png">
+        <div class="empty-img-container" v-if="!ActiveNote">
+          <img src="../empty.png">
         </div>
         <NoteEditor
           v-if="ActiveNote"
