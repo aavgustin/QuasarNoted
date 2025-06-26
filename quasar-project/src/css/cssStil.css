@@ -1,0 +1,122 @@
+.logo-container {
+  padding: 20px 10px 20px 30px;
+}
+
+.notebook-input {
+  padding-left: 20px;
+  width: 270px;
+}
+
+.add-btn-container {
+  padding-top: 8px;
+  padding-left: 20px;
+}
+
+.add-btn {
+  height: 20px;
+  width: auto;
+}
+
+.dialog-card {
+  height: 177px;
+  width: 177px;
+}
+
+.spacer {
+  padding-top: 5%;
+}
+
+.delete-btn {
+  padding: 4px;
+}
+
+.delete-icon {
+  height: 20px;
+}
+
+.clear-label {
+  font-size: 16px;
+  color: #f8d02e;
+  padding-left: 40%;
+}
+.title-section {
+  display: flex;
+  justify-content: center;
+  font-size: 36px;
+  padding-top: 9%;
+}
+
+.search-create-section {
+  display: flex;
+  justify-content: center;
+  font-size: 36px;
+  padding-top: 5%;
+}
+
+.search-input {
+  padding-left: 20px;
+  width: 270px;
+}
+
+.add-button-wrapper {
+  padding-left: 20px;
+}
+
+.note-dialog {
+  height: 177px;
+  width: 177px;
+}
+
+.notes-scroll {
+  height: 475px;
+  overflow-y: auto;
+}
+
+.note-card {
+  margin-bottom: 8px; /* q-mb-sm replacement */
+}
+
+.note-title {
+  font-size: 24px;
+}
+
+.note-notebook {
+  color: goldenrod;
+}
+
+.delete-btn {
+  padding: 4px;
+}
+
+.delete-icon {
+  height: 20px;
+}
+
+.dialog-card {
+  height: 177px;
+  width: 177px;
+}
+
+.top-padding {
+  padding-top: 5%;
+}
+
+.note-title-input {
+  background-color: white;
+  width: 80%;
+}
+
+.notebook-label {
+  color: #f8d02e;
+}
+
+.note-editor {
+  background-color: #242424;
+
+}
+
+.fixed-submit-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}

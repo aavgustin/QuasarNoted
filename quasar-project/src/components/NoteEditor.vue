@@ -1,29 +1,32 @@
 <template>
   <div>
-    <div style="padding-top: 5%;" class="row justify-center">
-    <q-input v-model="editable.title" label="Title" style="background-color: white; width: 80%;" />
+    <div class="top-padding row justify-center">
+      <q-input v-model="editable.title" label="Title" class="note-title-input" />
     </div>
-    <div class="row justify-center" style="color:#f8d02e">Notebook: {{ editable.notebook }}</div>
+    <div class="row justify-center notebook-label">Notebook: {{ editable.notebook }}</div>
     <q-editor
       v-model="editable.content"
       height="420px"
-      class="text-white"
-      style="background-color: #242424;"
+      class="text-white note-editor"
       :toolbar="[
-    ['bold', 'italic', 'underline'],
-    ['unordered', 'ordered'],
-    ['undo', 'redo'],
-    ['fullscreen']]"/>
-    </div>
-    <div style="position: fixed; bottom: 20px; right: 20px;">
+        ['bold', 'italic', 'underline'],
+        ['unordered', 'ordered'],
+        ['undo', 'redo'],
+        ['fullscreen']
+      ]"
+    />
+  </div>
+  <div class="fixed-submit-btn">
     <q-btn
       color="yellow"
       round
       text-color="black"
       label="✔"
-      @click="$emit('update-note', editable)"/>
-    </div>
+      @click="$emit('update-note', editable)"
+    />
+  </div>
 </template>
+
 
 <script setup>
 import { ref, watch } from 'vue'

@@ -1,83 +1,93 @@
 <template>
-  <div class="row ">
-    <div style="padding-top: 20px; padding-bottom: 20px; padding-left: 30px; padding-right: 10px;"><img src="src/logo.png"></div>
-    
-    <q-input style="padding-left: 20px; width: 270px;"
+  <div class="row">
+    <div class="logo-container">
+      <img src="src/logo.png" />
+    </div>
+
+    <q-input
+      class="notebook-input"
       v-model="searchNotebook"
       outlined
       bg-color="white"
       label="Notebooks:"/>
+
     <!--quasarov button <q-btn> umjesto standardnog html <button>-->
-    <div style="padding-top: 8px; padding-left: 20px;">
-    <q-btn style="height: 20px; width: auto;"
-      round
-      label="+"
-      color="yellow"
-      text-color="black"
-      @click="showDialog = true"/>
-      </div>
+    <div class="add-btn-container">
+      <q-btn
+        class="add-btn"
+        round
+        label="+"
+        color="yellow"
+        text-color="black"
+        @click="showDialog = true"/>
+    </div>
   </div>
 
-<!--popup dialog za dodavanje knjige u firebase-->
-<div>
-<q-dialog v-model="showDialog">
-  <q-card style="height: 500px; width: 500px;">
-    <q-card-section>
-    <div>Create notebook</div>
-    <q-input v-model="newNotebookName" label="Notebook:" />
-    </q-card-section>
-    <q-card-actions>
-    <q-btn label="Create" @click="addNotebook"/>
-    <q-btn label="Exit" v-close-popup/>
-    </q-card-actions>
-  </q-card>
-</q-dialog>
-</div>
+  <!--popup dialog za dodavanje knjige u firebase-->
+  <div>
+    <q-dialog v-model="showDialog">
+      <q-card class="dialog-card">
+        <q-card-section>
+          <div>Create notebook</div>
+          <q-input v-model="newNotebookName" label="Notebook:" />
+        </q-card-section>
+        <q-card-actions>
+          <q-btn label="Exit" v-close-popup/>
+          <q-btn label="Create" color="primary" @click="addNotebook"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+  </div>
 
-<!--dialog za potvrdu brisanja-->
-<q-dialog v-model="deleteDialogVisible">
-  <q-card>
-    <q-card-section>
-      Jeste li sigurni?
-    </q-card-section>
-    <q-card-actions>
-      <q-btn flat label="Cancel" v-close-popup />
-      <q-btn color="negative" label="Delete" @click="confirmDeleteNotebook" />
-    </q-card-actions>
-  </q-card>
-</q-dialog>
+  <!--dialog za potvrdu brisanja-->
+  <q-dialog v-model="deleteDialogVisible">
+    <q-card class="dialog-card">
+      <q-card-section>Delete Notebook?</q-card-section>
+      <q-card-actions>
+        <q-btn label="Exit" v-close-popup />
+        <q-btn label="Delete" color="primary" @click="confirmDeleteNotebook" />
+      </q-card-actions>
+    </q-card>
+  </q-dialog>
 
-<!--ptelja za prikazat notebook-->
-<div v-for="notebook in filteredNotebooks"
- :key="notebook.id"
- class="row items-center q-my-xs">
-  <q-btn
-    class="col"
-    :label="notebook.name"
-    :style="{backgroundColor: notebook.id === ActiveNotebook ? '#f8d02e' : '#2b2b2b', color:'white'}"
-    @click="$emit('odabirKnjige', notebook.id)"/>
+  <div class="spacer"></div>
 
-<!--tipka za brianje notebooka-->
-        <q-btn
-        flat
-        dense
-        @click.stop="triggerDelete(notebook)"
-        style="padding: 4px;">
-        <img src="../delete.png" style="height: 20px;" />
-      </q-btn>
-</div>
+  <!--ptelja za prikazat notebook-->
+  <div
+    v-for="notebook in filteredNotebooks"
+    :key="notebook.id"
+    class="row items-center q-my-xs">
+    <q-btn
+      class="col notebook-btn"
+      :label="notebook.name"
+      :style="{ backgroundColor: notebook.id === ActiveNotebook ? '#f8d02e' : '#2b2b2b', color: 'white' }"
+      @click="$emit('odabirKnjige', notebook.id)"/>
 
-<!--klik na show all notes postavi "null" na selection (umjesto kljuca)-->
-<q-item clickable @click="$emit('odabirKnjige', null)">
-  <div style="font-size:16px;color:#f8d02e; padding-left: 40%;"><q-item-section>Clear</q-item-section></div>
-</q-item>
+    <!--tipka za brianje notebooka-->
+    <q-btn
+      flat
+      dense
+      @click.stop="triggerDelete(notebook)"
+      class="delete-btn">
+      <img src="../delete.png" class="delete-icon" />
+    </q-btn>
+  </div>
+
+  <!--klik na show all notes postavi "null" na selection (umjesto kljuca)-->
+  <q-item clickable @click="$emit('odabirKnjige', null)">
+    <div class="clear-label">
+      <q-item-section>Clear</q-item-section>
+    </div>
+  </q-item>
 </template>
+
 
 
 <script setup>
 import { ref, computed } from 'vue'
 import { db } from 'src/firebase/firebase'
 import { collection, addDoc, deleteDoc, doc, getDocs } from 'firebase/firestore'
+
 //povratak notebooks i ActiveNotebook strane indexpage-a
 //Povratat odabranog notebooka parentu
 const props = defineProps(['notebooks', 'ActiveNotebook'])
