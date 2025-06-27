@@ -1,8 +1,8 @@
 {
   "name": "quasar-project",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Note keeping app",
+  "productName": "Noted!",
   "author": "aavgustin <aavgustin@veleri.hr>",
   "private": true,
   "scripts": {
@@ -13,6 +13,7 @@
     "build": "quasar build"
   },
   "dependencies": {
+    "@capacitor/android": "^7.4.0",
     "@quasar/extras": "^1.16.4",
     "firebase": "^11.9.1",
     "quasar": "^2.16.0",
@@ -20,8 +21,10 @@
     "vue-router": "^4.0.12"
   },
   "devDependencies": {
+    "@electron/packager": "^18.3.6",
     "@quasar/app-vite": "^1.9.0",
     "autoprefixer": "^10.4.2",
+    "electron": "^37.1.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^8.1.0",
     "eslint-plugin-vue": "^9.0.0",

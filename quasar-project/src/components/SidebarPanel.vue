@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="logo-container">
-      <img src="src/logo.png" />
+      <img src="logo.png" />
     </div>
     <div></div>
     <q-input

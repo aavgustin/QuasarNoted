@@ -49,9 +49,11 @@ module.exports = configure(function (/* ctx */) {
     build: {
       target: {
         browser: [ 'es2019', 'edge88', 'firefox78', 'chrome87', 'safari13.1' ],
-        node: 'node20'
+        node: 'node20',
+        productName: 'Noted!',
       },
-
+      //za mobilne verzije
+      //distDir: 'www',
       vueRouterMode: 'hash', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
@@ -176,6 +178,7 @@ module.exports = configure(function (/* ctx */) {
       bundler: 'packager', // 'packager' or 'builder'
 
       packager: {
+        name: 'Noted!',
         // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
 
         // OS X / Mac App Store
