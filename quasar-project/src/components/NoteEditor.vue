@@ -1,11 +1,11 @@
 <template>
   <div>
     <div class="top-padding row justify-center">
-      <q-input v-model="editable.title" label="    Title" class="note-title-input" />
+      <q-input v-model="ContentVarijabla.title" label="Title" class="note-title-input" />
     </div>
-    <div class="row justify-center notebook-label">Notebook: {{ editable.notebook }}</div>
+    <div class="row justify-center notebook-label">Notebook: {{ ContentVarijabla.notebook }}</div>
     <q-editor
-      v-model="editable.content"
+      v-model="ContentVarijabla.content"
       height="420px"
       class="text-white note-editor"
       :toolbar="[
@@ -22,7 +22,7 @@
       round
       text-color="black"
       label="✔"
-      @click="$emit('update-note', editable)"
+      @click="$emit('update-note', ContentVarijabla)"
     />
   </div>
 </template>
@@ -33,11 +33,11 @@ import { ref, watch } from 'vue'
 const props = defineProps(['note'])
 const emit = defineEmits(['update-note', 'refresh'])
 
-const editable = ref({ ...props.note })
+const ContentVarijabla = ref({ ...props.note })
 //const currentDate = new Date().toLocaleDateString()
 
-watch(() => props.note, (newVal) => {
-  editable.value = { ...newVal }
+watch(() => props.note, (nova) => {
+  ContentVarijabla.value = { ...nova }
 })
 
 </script>

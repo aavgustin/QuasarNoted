@@ -19,13 +19,13 @@
         label="+"
         color="yellow"
         text-color="black"
-        @click="showDialog = true"/>
+        @click="CreateDialog = true"/>
     </div>
   </div>
 
   <!--popup dialog za dodavanje knjige u firebase-->
   <div>
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="CreateDialog">
       <q-card class="dialog-card">
         <q-card-section>
           <div>Create notebook</div>
@@ -40,7 +40,7 @@
   </div>
 
   <!--dialog za potvrdu brisanja-->
-  <q-dialog v-model="deleteDialogVisible">
+  <q-dialog v-model="DeleteDialog">
     <q-card class="dialog-card">
       <q-card-section>Delete Notebook?</q-card-section>
       <q-card-actions>
@@ -96,21 +96,21 @@ const emit = defineEmits(['odabirKnjige', 'refresh'])
 //pretraga notebook u input feild
 const searchNotebook = ref('');
 const filteredNotebooks = computed(() => {
-  const term = searchNotebook.value.toLowerCase()
+  const naziv = searchNotebook.value.toLowerCase()
   return props.notebooks.filter(n =>
-    n.name.toLowerCase().includes(term)
+    n.name.toLowerCase().includes(naziv)
   )
 })
 
 
 
 //po defaultu dialog zatvoren a naziv knjige prazan
-const showDialog = ref(false)
+const CreateDialog = ref(false)
 const newNotebookName = ref('')
 
 
 //dialog za brisanje iskljucen a notebook za brisanje ne ordreden
-const deleteDialogVisible = ref(false)
+const DeleteDialog = ref(false)
 const notebookToDelete = ref(null)
 
 async function addNotebook() {
@@ -122,7 +122,7 @@ async function addNotebook() {
       NotebookName: newNotebookName.value.trim()
     })
     emit('refresh')
-    showDialog.value = false
+    CreateDialog.value = false
     newNotebookName.value = ''
   } catch (e) {
     console.error('Error', e)
@@ -132,7 +132,7 @@ async function addNotebook() {
 //otvaranje dialoga za briasnje notebooka i postavljanje varijable koji notebook se zeli brisat
 function triggerDelete(notebook) {
   notebookToDelete.value = notebook
-  deleteDialogVisible.value = true
+  DeleteDialog.value = true
 }
 
 //brisanje notebooka u firebase
@@ -148,7 +148,7 @@ async function confirmDeleteNotebook() {
 
     await deleteDoc(doc(db, `notebooks/${notebook.id}`))
     emit('refresh')
-    deleteDialogVisible.value = false
+    DeleteDialog.value = false
     notebookToDelete.value = null
   } catch (e) {
     console.error('Error', e)

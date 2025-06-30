@@ -20,12 +20,12 @@
           round
           color="yellow"
           text-color="black"
-          @click="showDialog = true" />
+          @click="CreateDialog = true" />
       </div>
     </div>
 
     <!--dialog za novi note-->
-    <q-dialog v-model="showDialog">
+    <q-dialog v-model="CreateDialog">
       <q-card class="note-dialog">
         <q-card-section>
           <div>Create Note</div>
@@ -71,7 +71,7 @@
       </q-card>
     </div>
 
-    <q-dialog v-model="deleteDialogVisible">
+    <q-dialog v-model="DeleteDialog">
       <q-card class="dialog-card">
         <q-card-section>
           Are you sure you want to delete this note?
@@ -95,7 +95,7 @@ import { db } from 'src/firebase/firebase'
 const props = defineProps(['notes', 'ActiveNote', 'notebooks', 'ActiveNotebook'])
 const emit = defineEmits(['OdabranNote', 'refresh'])
 
-const showDialog = ref(false)
+const CreateDialog = ref(false)
 const selectedNotebookId = ref('')
 const newNoteName = ref('')
 
@@ -123,7 +123,7 @@ const term = searchNotes.value.toLowerCase()
 })
 
 // provjera ako se zeli izbrisati
-const deleteDialogVisible = ref(false)
+const DeleteDialog = ref(false)
 const noteToDelete = ref(null)
 
 async function addNote() {
@@ -135,7 +135,7 @@ async function addNote() {
       NoteContent: "",
       DateEdited: new Date().toISOString()
     })
-    showDialog.value = false
+    CreateDialog.value = false
     newNoteName.value = ''
     emit('refresh')
   } catch (error) {
@@ -145,7 +145,7 @@ async function addNote() {
 
 function deleteNote(note) {
   noteToDelete.value = note
-  deleteDialogVisible.value = true
+  DeleteDialog.value = true
 }
 
 async function confirmDeleteNote() {
@@ -157,7 +157,7 @@ async function confirmDeleteNote() {
 
   try {
     await deleteDoc(doc(db, `notebooks/${notebook.id}/notes/${note.id}`))
-    deleteDialogVisible.value = false
+    DeleteDialog.value = false
     noteToDelete.value = null
     emit('refresh')
   } catch (error) {
