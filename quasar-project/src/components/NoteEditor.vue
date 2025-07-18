@@ -34,7 +34,7 @@ const props = defineProps(['note'])
 const emit = defineEmits(['update-note', 'refresh'])
 
 const ContentVarijabla = ref({ ...props.note })
-//const currentDate = new Date().toLocaleDateString()
+
 
 watch(() => props.note, (nova) => {
   ContentVarijabla.value = { ...nova }

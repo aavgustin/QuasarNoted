@@ -2,7 +2,7 @@
   <div>
     <div class="title-section">
       {{ props.ActiveNotebook 
-      ? (props.notebooks.find(n => n.id === props.ActiveNotebook)?.name || 'Notebook') 
+      ? (props.notebooks.find(n => n.id === props.ActiveNotebook)?.name) 
       : 'Recently edited' 
       }}
     </div>
@@ -74,7 +74,7 @@
     <q-dialog v-model="DeleteDialog">
       <q-card class="dialog-card">
         <q-card-section>
-          Are you sure you want to delete this note?
+          delete?
         </q-card-section>
 
         <q-card-actions>

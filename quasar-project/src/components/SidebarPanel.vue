@@ -52,7 +52,7 @@
 
   <div class="spacer"></div>
 
-  <!--ptelja za prikazat notebook-->
+  <!--petlja za prikazat notebook-->
   <div
     v-for="notebook in filteredNotebooks"
     :key="notebook.id"
@@ -63,7 +63,7 @@
       :style="{ backgroundColor: notebook.id === ActiveNotebook ? '#f8d02e' : '#2b2b2b', color: 'white' }"
       @click="$emit('odabirKnjige', notebook.id)"/>
 
-    <!--tipka za brianje notebooka-->
+    <!--tipka za brisanje notebooka-->
     <q-btn
       flat
       dense

@@ -11,7 +11,7 @@
       </div>
 
       <!-- Notes List -->
-      <div class="col-12 col-md-4 bg-notelist">
+      <div class="col-12 col-md-3 bg-notelist">
         <NotesList
           :notes="filteredNotes"
           :ActiveNote="ActiveNote"
@@ -22,7 +22,7 @@
       </div>
 
       <!-- Editor -->
-      <div class="col-12 col-md-5 q-pa-sm bg-editor">
+      <div class="col-12 col-md-6 q-pa-sm bg-editor">
         <div class="preview-label">Preview</div>
         <div class="sync-btn">
           <q-btn
